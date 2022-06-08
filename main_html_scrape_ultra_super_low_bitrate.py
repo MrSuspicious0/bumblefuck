@@ -1,4 +1,5 @@
 import os
+from os import path
 from io import BytesIO, StringIO
 from secrets import SystemRandom
 
@@ -10,12 +11,10 @@ from PIL import Image
 import main
 from functools import partial
 from threading import Thread
-from contextlib import redirect_stdout, redirect_stderr
-import logging
+from contextlib import redirect_stderr
 #####################################################
 # PARMETERS SECTION
 
-logging.basicConfig(filename="log.log")
 RESOLUTION = (240, 140)
 FPS = 8
 rand = SystemRandom()
@@ -99,9 +98,20 @@ def doIt(thing, count, cool, include, window: main.MainWindow):
     if include:
         introtext += "s"
 
-    exportpath = f"output/{thing}.mp4"
-    musicpath = "music"
+    basedir = path.normpath(path.expanduser("~"))
+    exportpath = path.join(
+        basedir, "Videos", "bumblefolder", "output", )
+    musicpath = path.join(basedir, "Videos", "bumblefolder", "music")
 
+    try:
+        os.makedirs(exportpath)
+    except:
+        pass
+
+    try:
+        os.makedirs(musicpath)
+    except:
+        pass
 # you can't just drop in another website, I did this specifically to work with google images
 ####################################################
 
@@ -149,24 +159,8 @@ def doIt(thing, count, cool, include, window: main.MainWindow):
 # just dont try and do the rest
 
     log("checking directories...")
-    try:
-        os.mkdir(exportpath.rsplit("/", 1)[0])
-    except:
-        pass
-
-    try:
-        os.mkdir(musicpath.rsplit("/", 1)[0])
-    except:
-        pass
 
     log("starting video creation...")
-    musiclist = []
-    for x in os.listdir(musicpath):
-        musiclist.append(AudioFileClip(musicpath + "/" + x))
-
-    rand.shuffle(musiclist)
-
-    musiclist = concatenate_audioclips(musiclist)
 
     if cool:
         color = ColorClip(size=RESOLUTION, duration=2.5, color=[66, 128, 214])
@@ -227,9 +221,19 @@ def doIt(thing, count, cool, include, window: main.MainWindow):
 
     finalvideo = concatenate_videoclips(cliplist)
 
-    musiclist = musiclist.set_duration(finalvideo.duration).set_fps(1)
+    if len(os.listdir(musicpath)) != 0:
 
-    finalvideo.audio = musiclist
+        musiclist = []
+        for x in os.listdir(musicpath):
+            musiclist.append(AudioFileClip(musicpath + "/" + x))
 
-    updateBar(window, finalvideo, exportpath)
+        rand.shuffle(musiclist)
+
+        musiclist = concatenate_audioclips(musiclist)
+
+        musiclist = musiclist.set_duration(finalvideo.duration).set_fps(1)
+
+        finalvideo.audio = musiclist
+
+    updateBar(window, finalvideo, exportpath + f"/{thing}.mp4")
     log("Done!")
