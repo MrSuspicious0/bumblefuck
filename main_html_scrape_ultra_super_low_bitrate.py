@@ -143,7 +143,8 @@ def doIt(thing, count, cool, include, window: main.MainWindow):
     imageresults = []
 
     log("downloading and shuffling images")
-    for x in imglinks:
+    _imglinks = rand.sample(imglinks, count)
+    for x in _imglinks:
         temp_img = Image.open(
             BytesIO(requests.get(x).content))
 
