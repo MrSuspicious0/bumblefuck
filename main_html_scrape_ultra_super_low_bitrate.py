@@ -1,5 +1,5 @@
 import os
-from io import BytesIO
+from io import BytesIO, StringIO
 from secrets import SystemRandom
 
 import numpy as np
@@ -10,10 +10,12 @@ from PIL import Image
 import main
 from functools import partial
 from threading import Thread
+from contextlib import redirect_stdout, redirect_stderr
+import logging
 #####################################################
 # PARMETERS SECTION
 
-
+logging.basicConfig(filename="log.log")
 RESOLUTION = (240, 140)
 FPS = 8
 rand = SystemRandom()
@@ -22,6 +24,59 @@ rand = SystemRandom()
 # count = int(input("count: "))
 # cool = input("cool transitions and details? (y/n): ")
 # include = input("include 's' on name? (y/n): ")
+
+
+class DogNigga(StringIO):
+    def __init__(self, window: main.MainWindow):
+        super().__init__(newline="\n")
+        self.window = window
+
+    def write(self, __s: str) -> int:
+        percentage = 0
+
+        if "%" in __s:
+            if "chunk:" in __s:
+                v = __s.index("%")  # index in sys.stdout where the nan is
+                percentage = int(__s[v-2:v:]) / 2
+            if "t:" in __s:
+                v = __s.index("%")  # index in sys.stdout where the nan is
+                percentage = 50 + (int(__s[v-2:v:]) / 2)
+        self.window.progressBar.setValue(percentage)
+
+        return super().write(__s)
+
+
+def updateBar(window: main.MainWindow, finalvideo, exportpath):
+
+    with redirect_stderr(DogNigga(window)):
+
+        finalvideo.write_videofile(
+            exportpath, fps=FPS, audio_bitrate="45k", bitrate="6k")
+        window.btnRender.setEnabled(True)
+    # while True:
+
+    #     percentage = 0
+
+    #     sys.stdout = buffer = StringIO()
+
+    #     txt = buffer.getvalue()
+
+    #     if "Moviepy - Done !" in txt:
+    #         break
+
+    #     if "%" in txt:
+    #         if "chunk" in txt:
+    #             v = txt.index("%")  # index in sys.stdout where the nan is
+    #             percentage = int(txt[v-2:v:]) / 2
+    #         if "t" in txt:
+    #             v = txt.index("%")  # index in sys.stdout where the nan is
+    #             percentage = 50 + (int(txt[v-2:v:]) / 2)
+    #     window.progressBar.setValue(percentage)
+
+
+def _updateBar(window: main.MainWindow):
+    t = Thread(target=updateBar, args=(window))
+    t.start()
 
 
 def changeLog(window: main.MainWindow, txt):
@@ -176,6 +231,5 @@ def doIt(thing, count, cool, include, window: main.MainWindow):
 
     finalvideo.audio = musiclist
 
-    finalvideo.write_videofile(
-        exportpath, fps=FPS, audio_bitrate="45k", bitrate="6k")
-    window.btnRender.setEnabled(True)
+    updateBar(window, finalvideo, exportpath)
+    log("Done!")

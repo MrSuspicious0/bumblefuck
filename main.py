@@ -21,7 +21,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
 from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout,
                                QHBoxLayout, QLineEdit, QMainWindow,
                                QPushButton, QSizePolicy, QTextEdit,
-                               QVBoxLayout, QWidget)
+                               QVBoxLayout, QWidget, QProgressBar)
 
 import icon_rc
 
@@ -30,9 +30,9 @@ class Ui_windowMainWindow(object):
     def setupUi(self, windowMainWindow):
         if not windowMainWindow.objectName():
             windowMainWindow.setObjectName(u"windowMainWindow")
-        windowMainWindow.resize(323, 183)
-        windowMainWindow.setMinimumSize(QSize(323, 183))
-        windowMainWindow.setMaximumSize(QSize(323, 183))
+        windowMainWindow.resize(323, 214)
+        windowMainWindow.setMinimumSize(QSize(323, 214))
+        windowMainWindow.setMaximumSize(QSize(323, 214))
         icon = QIcon()
         icon.addFile(u":/icon.ico", QSize(), QIcon.Normal, QIcon.Off)
         windowMainWindow.setWindowIcon(icon)
@@ -40,6 +40,12 @@ class Ui_windowMainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.txtLogOutput = QTextEdit(self.centralwidget)
+        self.txtLogOutput.setObjectName(u"txtLogOutput")
+        self.txtLogOutput.setReadOnly(True)
+
+        self.gridLayout.addWidget(self.txtLogOutput, 2, 0, 1, 1)
+
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.verticalLayout_2 = QVBoxLayout()
@@ -79,6 +85,7 @@ class Ui_windowMainWindow(object):
         self.chkboxCool = QCheckBox(self.centralwidget)
         self.chkboxCool.setObjectName(u"chkboxCool")
         self.chkboxCool.setChecked(True)
+
         self.verticalLayout_3.addWidget(self.chkboxCool)
 
         self.chkboxInclude = QCheckBox(self.centralwidget)
@@ -90,10 +97,12 @@ class Ui_windowMainWindow(object):
 
         self.gridLayout.addLayout(self.horizontalLayout_2, 0, 0, 1, 1)
 
-        self.txtLogOutput = QTextEdit(self.centralwidget)
-        self.txtLogOutput.setObjectName(u"txtLogOutput")
-        self.txtLogOutput.setReadOnly(True)
-        self.gridLayout.addWidget(self.txtLogOutput, 1, 0, 1, 1)
+        self.progressBar = QProgressBar(self.centralwidget)
+        self.progressBar.setObjectName(u"progressBar")
+        self.progressBar.setValue(0)
+        self.progressBar.setTextVisible(False)
+
+        self.gridLayout.addWidget(self.progressBar, 1, 0, 1, 1)
 
         windowMainWindow.setCentralWidget(self.centralwidget)
 
@@ -110,7 +119,6 @@ class Ui_windowMainWindow(object):
         count = int(self.txtImgCount.text())
         cool = self.chkboxCool.isChecked()
         include = self.chkboxInclude.isChecked()
-
         _doIt(thing, count, cool, include, self)
 
     def retranslateUi(self, windowMainWindow):
