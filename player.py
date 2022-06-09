@@ -24,7 +24,7 @@ def get_supported_mime_types():
     return result
 
 
-class MainWindow(QMainWindow):
+class Player(QMainWindow):
 
     def __init__(self, video):
         super().__init__()
@@ -182,10 +182,16 @@ class MainWindow(QMainWindow):
         self.show_status_message(error_string)
 
 
+class VideoPlayer(Player):
+    def __init__(self, video, parent=None):
+        super().__init__(video)
+        self.show()
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    main_win = MainWindow(video=QUrl(
-        "file:///C:/Users/joshf/Documents/Code/Movie Thing/output/lee ligma.mp4"))
+    main_win = Player(video=QUrl(
+        "file:///C:/Users/joshf/Documents/Code/Movie Thing/output/Coconuts.mp4"))
     available_geometry = main_win.screen().availableGeometry()
     main_win.resize(available_geometry.width() / 3,
                     available_geometry.height() / 2)

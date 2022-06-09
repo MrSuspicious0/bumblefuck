@@ -21,6 +21,11 @@ rand = SystemRandom()
 
 # thing = input("thing: ")
 # count = int(input("count: "))
+basedir = path.normpath(path.expanduser("~"))
+bumblepath = path.join(
+    basedir, "Videos", "bumblefolder")
+exportpath = path.join(bumblepath, "output")
+musicpath = path.join(bumblepath, "music")
 # cool = input("cool transitions and details? (y/n): ")
 # include = input("include 's' on name? (y/n): ")
 
@@ -50,30 +55,6 @@ def updateBar(window: main.MainWindow, finalvideo, exportpath):
         finalvideo.write_videofile(
             exportpath, fps=FPS, audio_bitrate="45k", bitrate="6k")
         window.btnRender.setEnabled(True)
-    # while True:
-
-    #     percentage = 0
-
-    #     sys.stdout = buffer = StringIO()
-
-    #     txt = buffer.getvalue()
-
-    #     if "Moviepy - Done !" in txt:
-    #         break
-
-    #     if "%" in txt:
-    #         if "chunk" in txt:
-    #             v = txt.index("%")  # index in sys.stdout where the nan is
-    #             percentage = int(txt[v-2:v:]) / 2
-    #         if "t" in txt:
-    #             v = txt.index("%")  # index in sys.stdout where the nan is
-    #             percentage = 50 + (int(txt[v-2:v:]) / 2)
-    #     window.progressBar.setValue(percentage)
-
-
-def _updateBar(window: main.MainWindow):
-    t = Thread(target=updateBar, args=(window))
-    t.start()
 
 
 def changeLog(window: main.MainWindow, txt):
@@ -96,24 +77,15 @@ def doIt(thing, count, cool, include, window: main.MainWindow):
     if include:
         introtext += "s"
 
-    basedir = path.normpath(path.expanduser("~"))
-    exportpath = path.join(
-        basedir, "Videos", "bumblefolder", "output", )
-    musicpath = path.join(basedir, "Videos", "bumblefolder", "music")
-
-    try:
+    if not path.isdir(exportpath):
         os.makedirs(exportpath)
-    except:
-        pass
 
-    try:
+    if not path.isdir(musicpath):
         os.makedirs(musicpath)
-    except:
-        pass
+
 # you can't just drop in another website, I did this specifically to work with google images
 ####################################################
 
-    image_tags = list()
     url = f"https://www.google.com/search?tbm=isch&oq=&aqs=&q={thing.replace(' ', '+')}"
 
     imglinks = list()
@@ -149,8 +121,7 @@ def doIt(thing, count, cool, include, window: main.MainWindow):
         imageresults.append(temp_img)
 
     rand.shuffle(imageresults)
-# for index, img in enumerate(imageresults):
-#     img.save(f"img/{index}.png")
+
 # temp_img.show()
 
 
@@ -234,5 +205,5 @@ def doIt(thing, count, cool, include, window: main.MainWindow):
 
         finalvideo.audio = musiclist
 
-    updateBar(window, finalvideo, exportpath + f"/{thing}.mp4")
+    updateBar(window, finalvideo, f"{exportpath}/{thing}.mp4")
     log("Done!")

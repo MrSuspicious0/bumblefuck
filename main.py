@@ -17,11 +17,11 @@ from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
 from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
                            QFontDatabase, QGradient, QIcon, QImage,
                            QKeySequence, QLinearGradient, QPainter, QPalette,
-                           QPixmap, QRadialGradient, QTransform, QTextCursor)
+                           QPixmap, QRadialGradient, QTextCursor, QTransform, QDesktopServices)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout,
-                               QHBoxLayout, QLineEdit, QMainWindow,
-                               QPushButton, QSizePolicy, QTextEdit,
-                               QVBoxLayout, QWidget, QProgressBar)
+                               QHBoxLayout, QLineEdit, QMainWindow, QMenu,
+                               QProgressBar, QPushButton, QSizePolicy,
+                               QTextEdit, QVBoxLayout, QWidget)
 
 import icon_rc
 
@@ -33,9 +33,9 @@ class Ui_windowMainWindow(object):
         windowMainWindow.resize(362, 214)
         windowMainWindow.setMinimumSize(QSize(323, 214))
         windowMainWindow.setMaximumSize(QSize(362, 214))
-        icon = QIcon()
-        icon.addFile(u":/icon.ico", QSize(), QIcon.Normal, QIcon.Off)
-        windowMainWindow.setWindowIcon(icon)
+        self.icon = QIcon()
+        self.icon.addFile(u":/icon.ico", QSize(), QIcon.Normal, QIcon.Off)
+        windowMainWindow.setWindowIcon(self.icon)
         self.centralwidget = QWidget(windowMainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -71,10 +71,10 @@ class Ui_windowMainWindow(object):
 
         self.horizontalLayout.addWidget(self.btnRender)
 
-        self.btnSave = QPushButton(self.centralwidget)
-        self.btnSave.setObjectName(u"btnSave")
+        self.btnOpen = QPushButton(self.centralwidget)
+        self.btnOpen.setObjectName(u"btnOpen")
 
-        self.horizontalLayout.addWidget(self.btnSave)
+        self.horizontalLayout.addWidget(self.btnOpen)
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
@@ -112,6 +112,7 @@ class Ui_windowMainWindow(object):
         QMetaObject.connectSlotsByName(windowMainWindow)
     # setupUi
         self.btnRender.clicked.connect(self.doTheThing)
+        self.btnOpen.clicked.connect(self.openFolder)
 
     def doTheThing(self):
         self.txtLogOutput.clear()
@@ -121,6 +122,10 @@ class Ui_windowMainWindow(object):
         cool = self.chkboxCool.isChecked()
         include = self.chkboxInclude.isChecked()
         _doIt(thing, count, cool, include, self)
+
+    def openFolder(self):
+        url = QUrl.fromLocalFile(bumblepath)
+        QDesktopServices.openUrl(url)
 
     def retranslateUi(self, windowMainWindow):
         windowMainWindow.setWindowTitle(QCoreApplication.translate(
@@ -135,24 +140,25 @@ class Ui_windowMainWindow(object):
         self.btnRender.setShortcut(QCoreApplication.translate(
             "windowMainWindow", u"Return", None))
 #endif // QT_CONFIG(shortcut)
-        self.btnSave.setText(QCoreApplication.translate(
-            "windowMainWindow", u"Save Result", None))
+        self.btnOpen.setText(QCoreApplication.translate(
+            "windowMainWindow", u"Open Directory", None))
         self.chkboxCool.setText(QCoreApplication.translate(
             "windowMainWindow", u"Transitions", None))
         self.chkboxInclude.setText(QCoreApplication.translate(
             "windowMainWindow", u"Include \"s\" on things", None))
-    # retranslateUi
 
 
 class MainWindow(QMainWindow, Ui_windowMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+
         self.show()
 
 
 if __name__ == '__main__':
-    from main_html_scrape_ultra_super_low_bitrate import doIt, _doIt
+    from main_html_scrape_ultra_super_low_bitrate import (_doIt, bumblepath,
+                                                          doIt)
     app = QApplication([])
     app.setStyleSheet(qdarktheme.load_stylesheet())
     window = MainWindow()
