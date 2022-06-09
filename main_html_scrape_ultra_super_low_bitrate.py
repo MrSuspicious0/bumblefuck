@@ -42,8 +42,6 @@ class DogNigga(StringIO):
                 percentage = 50 + (int(__s[v-2:v:]) / 2)
         self.window.progressBar.setValue(percentage)
 
-        return super().write(__s)
-
 
 def updateBar(window: main.MainWindow, finalvideo, exportpath):
 
