@@ -54,7 +54,7 @@ class VideoMaker(QObject):
         randomhandfulcount = int(self.count * 2)
         self.FPS = 1 if not self.cool else 8
         log = self.addToLog.emit
-        log("Top list generator - bumblefuck")
+        log("bumblefuck list generator")
         introtext = f"top {self.count} \n{self.thing}"
         if self.include:
             introtext += "s"
@@ -93,7 +93,7 @@ class VideoMaker(QObject):
 
         imageresults = []
 
-        log("downloading and shuffling images")
+        log("downloading and shuffling images...")
         _imglinks = rand.sample(imglinks, self.count)
         for x in _imglinks:
             temp_img = Image.open(
@@ -111,6 +111,7 @@ class VideoMaker(QObject):
         log("checking directories...")
 
         log("starting video creation...")
+
         try:
             if self.cool:
                 color = ColorClip(size=RESOLUTION, duration=2.5,
@@ -188,9 +189,8 @@ class VideoMaker(QObject):
 
             filepath = f"{exportpath}/{self.thing}.mp4"
             self.updateBar(finalvideo, filepath)
-            log("Done!")
             end = perf_counter()
-            log(f"Time elapsed: {round(end-start, 2)}s")
+            log(f"Done, time elapsed: {round(end-start, 2)}s!")
             self.finished.emit()
         except Exception as e:
             logging.error(e)
