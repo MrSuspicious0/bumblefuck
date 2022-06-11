@@ -18,8 +18,6 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout,
                                QHBoxLayout, QLabel, QLineEdit, QMainWindow,
                                QProgressBar, QPushButton, QTextEdit,
                                QToolButton, QVBoxLayout, QWidget)
-from datetime import timedelta
-from time import strftime, gmtime
 import icon_rc
 
 
@@ -27,9 +25,9 @@ class Ui_windowMainWindow(object):
     def setupUi(self, windowMainWindow):
         if not windowMainWindow.objectName():
             windowMainWindow.setObjectName(u"windowMainWindow")
-        windowMainWindow.resize(362, 231)
-        windowMainWindow.setMinimumSize(QSize(362, 231))
-        windowMainWindow.setMaximumSize(QSize(364, 231))
+        windowMainWindow.resize(378, 231)
+        windowMainWindow.setMinimumSize(QSize(378, 231))
+        windowMainWindow.setMaximumSize(QSize(378, 231))
         icon = QIcon()
         icon.addFile(u":/icon.ico", QSize(), QIcon.Normal, QIcon.Off)
         windowMainWindow.setWindowIcon(icon)
@@ -77,6 +75,9 @@ class Ui_windowMainWindow(object):
 
         self.btnMusicManager = QToolButton(self.centralwidget)
         self.btnMusicManager.setObjectName(u"btnMusicManager")
+        icon1 = QIcon()
+        icon1.addFile(u":/dancingbee.ico", QSize(), QIcon.Normal, QIcon.Off)
+        self.btnMusicManager.setIcon(icon1)
 
         self.horizontalLayout.addWidget(self.btnMusicManager)
 
@@ -101,6 +102,7 @@ class Ui_windowMainWindow(object):
 
         self.lblEstimation = QLabel(self.centralwidget)
         self.lblEstimation.setObjectName(u"lblEstimation")
+        self.lblEstimation.setMaximumSize(QSize(133, 16777215))
         self.lblEstimation.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_3.addWidget(self.lblEstimation)
@@ -139,13 +141,17 @@ class Ui_windowMainWindow(object):
 #endif // QT_CONFIG(shortcut)
         self.btnOpen.setText(QCoreApplication.translate(
             "windowMainWindow", u"Open Directory", None))
-        self.btnMusicManager.setText(
-            QCoreApplication.translate("windowMainWindow", u"...", None))
+# if QT_CONFIG(tooltip)
+        self.btnMusicManager.setToolTip(QCoreApplication.translate(
+            "windowMainWindow", u"Music Manager", None))
+#endif // QT_CONFIG(tooltip)
+        self.btnMusicManager.setText("")
         self.chkboxCool.setText(QCoreApplication.translate(
             "windowMainWindow", u"Transitions", None))
         self.chkboxInclude.setText(QCoreApplication.translate(
             "windowMainWindow", u"Include \"s\" on things", None))
-        self.lblEstimation.setText("Estimated time: 00:00:00")
+        self.lblEstimation.setText(QCoreApplication.translate(
+            "windowMainWindow", u"Estimated Time: 00:00:00", None))
     # retranslateUi
 
 
@@ -167,9 +173,15 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
     def updateEstimation(self):
         try:
             x = int(self.txtImgCount.text())
-            val = (0.00147023*(x**2))+(0.32968*x)+1.6266
-            timestr = strftime("%H:%M:%S", gmtime(val))
-            self.lblEstimation.setText(f"Estimated time: {timestr}")
+            seconds = round((0.00147023*(x**2))+(0.32968*x)+1.6266)
+            minutes, seconds = divmod(seconds, 60)
+            hours, minutes = divmod(minutes, 60)
+            hours = f"0{hours}" if hours < 10 else hours
+            minutes = f"0{minutes}" if minutes < 10 else minutes
+            seconds = f"0{seconds}" if seconds < 10 else seconds
+
+            self.lblEstimation.setText(
+                f"Estimated time: {hours}:{minutes}:{seconds}")
         except:
             pass
 
@@ -182,7 +194,6 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
         include = self.chkboxInclude.isChecked()
         self.videomaker = VideoMaker(thing, count, cool, include)
         self.videoThread = QThread()
-        self.videoThread.name = "E"
         self.videomaker.moveToThread(self.videoThread)
         self.videoThread.started.connect(self.videomaker.run)
         self.videomaker.finished.connect(self.videoThread.quit)

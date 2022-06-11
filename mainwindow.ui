@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>362</width>
+    <width>378</width>
     <height>231</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>362</width>
+    <width>378</width>
     <height>231</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>364</width>
+    <width>378</width>
     <height>231</height>
    </size>
   </property>
@@ -88,8 +88,15 @@
             </item>
             <item>
              <widget class="QToolButton" name="btnMusicManager">
+              <property name="toolTip">
+               <string>Music Manager</string>
+              </property>
               <property name="text">
-               <string>...</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icon.qrc">
+                <normaloff>:/dancingbee.ico</normaloff>:/dancingbee.ico</iconset>
               </property>
              </widget>
             </item>
@@ -120,8 +127,14 @@
         </item>
         <item>
          <widget class="QLabel" name="lblEstimation">
+          <property name="maximumSize">
+           <size>
+            <width>133</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
-           <string/>
+           <string>Estimated Time: 00:00:00</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>

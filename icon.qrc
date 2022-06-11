@@ -2,5 +2,6 @@
 <RCC>
     <qresource>
         <file>icon.ico</file>
+        <file>dancingbee.ico</file>
     </qresource>
 </RCC>
