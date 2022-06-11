@@ -11,7 +11,7 @@ from moviepy.editor import *
 from PIL import Image
 import logging
 from PySide6.QtCore import QObject, Signal
-
+from time import perf_counter
 #####################################################
 # PARMETERS SECTION
 
@@ -50,6 +50,7 @@ class VideoMaker(QObject):
                 filepath, fps=self.FPS, audio_bitrate="45k", bitrate="6k")
 
     def run(self):
+        start = perf_counter()
         randomhandfulcount = int(self.count * 2)
         self.FPS = 1 if not self.cool else 8
         log = self.addToLog.emit
@@ -188,6 +189,8 @@ class VideoMaker(QObject):
             filepath = f"{exportpath}/{self.thing}.mp4"
             self.updateBar(finalvideo, filepath)
             log("Done!")
+            end = perf_counter()
+            log(f"Time elapsed: {round(end-start, 2)}s")
             self.finished.emit()
         except Exception as e:
             logging.error(e)

@@ -11,13 +11,15 @@
 import sys
 
 import qdarktheme
-from PySide6.QtCore import QCoreApplication, QMetaObject, QSize, QThread, QUrl
+from PySide6.QtCore import (QCoreApplication, QMetaObject, QSize, Qt, QThread,
+                            QUrl)
 from PySide6.QtGui import QAction, QDesktopServices, QIcon, QTextCursor
 from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout,
-                               QHBoxLayout, QLineEdit, QMainWindow,
+                               QHBoxLayout, QLabel, QLineEdit, QMainWindow,
                                QProgressBar, QPushButton, QTextEdit,
                                QToolButton, QVBoxLayout, QWidget)
-
+from datetime import timedelta
+from time import strftime, gmtime
 import icon_rc
 
 
@@ -27,7 +29,7 @@ class Ui_windowMainWindow(object):
             windowMainWindow.setObjectName(u"windowMainWindow")
         windowMainWindow.resize(362, 231)
         windowMainWindow.setMinimumSize(QSize(362, 231))
-        windowMainWindow.setMaximumSize(QSize(362, 231))
+        windowMainWindow.setMaximumSize(QSize(364, 231))
         icon = QIcon()
         icon.addFile(u":/icon.ico", QSize(), QIcon.Normal, QIcon.Off)
         windowMainWindow.setWindowIcon(icon)
@@ -97,6 +99,12 @@ class Ui_windowMainWindow(object):
 
         self.verticalLayout_3.addWidget(self.chkboxInclude)
 
+        self.lblEstimation = QLabel(self.centralwidget)
+        self.lblEstimation.setObjectName(u"lblEstimation")
+        self.lblEstimation.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_3.addWidget(self.lblEstimation)
+
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
 
         self.gridLayout.addLayout(self.horizontalLayout_2, 0, 0, 1, 1)
@@ -137,6 +145,7 @@ class Ui_windowMainWindow(object):
             "windowMainWindow", u"Transitions", None))
         self.chkboxInclude.setText(QCoreApplication.translate(
             "windowMainWindow", u"Include \"s\" on things", None))
+        self.lblEstimation.setText("Estimated time: 00:00:00")
     # retranslateUi
 
 
@@ -148,11 +157,21 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
         self.btnRender.clicked.connect(self.doTheThing)
         self.btnOpen.clicked.connect(self.openFolder)
         self.btnMusicManager.clicked.connect(self.openDownloader)
+        self.txtImgCount.textChanged.connect(self.updateEstimation)
         self.show()
 
     def log(self, txt):
         self.txtLogOutput.insertPlainText(f"{txt}\n")
         self.txtLogOutput.moveCursor(QTextCursor.End)
+
+    def updateEstimation(self):
+        try:
+            x = int(self.txtImgCount.text())
+            val = (0.00147023*(x**2))+(0.32968*x)+1.6266
+            timestr = strftime("%H:%M:%S", gmtime(val))
+            self.lblEstimation.setText(f"Estimated time: {timestr}")
+        except:
+            pass
 
     def doTheThing(self):
         self.txtLogOutput.clear()
@@ -163,6 +182,7 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
         include = self.chkboxInclude.isChecked()
         self.videomaker = VideoMaker(thing, count, cool, include)
         self.videoThread = QThread()
+        self.videoThread.name = "E"
         self.videomaker.moveToThread(self.videoThread)
         self.videoThread.started.connect(self.videomaker.run)
         self.videomaker.finished.connect(self.videoThread.quit)
@@ -187,8 +207,7 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
 
 if __name__ == '__main__':
     from DownloadAlert import DownloadAlert
-    from main_html_scrape_ultra_super_low_bitrate import (VideoMaker,
-                                                          bumblepath)
+    from main_html_scrape_ultra_super_low_bitrate import VideoMaker, bumblepath
     app = QApplication([])
     app.setStyleSheet(qdarktheme.load_stylesheet())
     window = MainWindow()

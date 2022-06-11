@@ -18,7 +18,7 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>362</width>
+    <width>364</width>
     <height>231</height>
    </size>
   </property>
@@ -115,6 +115,16 @@
          <widget class="QCheckBox" name="chkboxInclude">
           <property name="text">
            <string>Include &quot;s&quot; on things</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblEstimation">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
