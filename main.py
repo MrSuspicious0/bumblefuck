@@ -11,17 +11,12 @@
 import sys
 
 import qdarktheme
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-                            QMetaObject, QObject, QPoint, QRect, QSize, Qt,
-                            QTime, QUrl)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
-                           QFontDatabase, QGradient, QIcon, QImage,
-                           QKeySequence, QLinearGradient, QPainter, QPalette,
-                           QPixmap, QRadialGradient, QTextCursor, QTransform, QDesktopServices)
+from PySide6.QtCore import QCoreApplication, QMetaObject, QSize, QThread, QUrl
+from PySide6.QtGui import QAction, QDesktopServices, QIcon, QTextCursor
 from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout,
-                               QHBoxLayout, QLineEdit, QMainWindow, QMenu,
-                               QProgressBar, QPushButton, QSizePolicy,
-                               QTextEdit, QVBoxLayout, QWidget)
+                               QHBoxLayout, QLineEdit, QMainWindow,
+                               QProgressBar, QPushButton, QTextEdit,
+                               QToolButton, QVBoxLayout, QWidget)
 
 import icon_rc
 
@@ -30,12 +25,14 @@ class Ui_windowMainWindow(object):
     def setupUi(self, windowMainWindow):
         if not windowMainWindow.objectName():
             windowMainWindow.setObjectName(u"windowMainWindow")
-        windowMainWindow.resize(362, 214)
-        windowMainWindow.setMinimumSize(QSize(323, 214))
-        windowMainWindow.setMaximumSize(QSize(362, 214))
-        self.icon = QIcon()
-        self.icon.addFile(u":/icon.ico", QSize(), QIcon.Normal, QIcon.Off)
-        windowMainWindow.setWindowIcon(self.icon)
+        windowMainWindow.resize(362, 231)
+        windowMainWindow.setMinimumSize(QSize(362, 231))
+        windowMainWindow.setMaximumSize(QSize(362, 231))
+        icon = QIcon()
+        icon.addFile(u":/icon.ico", QSize(), QIcon.Normal, QIcon.Off)
+        windowMainWindow.setWindowIcon(icon)
+        self.actionOpen = QAction(windowMainWindow)
+        self.actionOpen.setObjectName(u"actionOpen")
         self.centralwidget = QWidget(windowMainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -76,6 +73,11 @@ class Ui_windowMainWindow(object):
 
         self.horizontalLayout.addWidget(self.btnOpen)
 
+        self.btnMusicManager = QToolButton(self.centralwidget)
+        self.btnMusicManager.setObjectName(u"btnMusicManager")
+
+        self.horizontalLayout.addWidget(self.btnMusicManager)
+
         self.verticalLayout.addLayout(self.horizontalLayout)
 
         self.verticalLayout_2.addLayout(self.verticalLayout)
@@ -111,25 +113,12 @@ class Ui_windowMainWindow(object):
 
         QMetaObject.connectSlotsByName(windowMainWindow)
     # setupUi
-        self.btnRender.clicked.connect(self.doTheThing)
-        self.btnOpen.clicked.connect(self.openFolder)
-
-    def doTheThing(self):
-        self.txtLogOutput.clear()
-        self.btnRender.setEnabled(False)
-        thing = self.txtThing.text()
-        count = int(self.txtImgCount.text())
-        cool = self.chkboxCool.isChecked()
-        include = self.chkboxInclude.isChecked()
-        _doIt(thing, count, cool, include, self)
-
-    def openFolder(self):
-        url = QUrl.fromLocalFile(bumblepath)
-        QDesktopServices.openUrl(url)
 
     def retranslateUi(self, windowMainWindow):
         windowMainWindow.setWindowTitle(QCoreApplication.translate(
             "windowMainWindow", u"bumblefuck", None))
+        self.actionOpen.setText(QCoreApplication.translate(
+            "windowMainWindow", u"Open", None))
         self.txtThing.setPlaceholderText(
             QCoreApplication.translate("windowMainWindow", u"Thing", None))
         self.txtImgCount.setPlaceholderText(
@@ -142,23 +131,64 @@ class Ui_windowMainWindow(object):
 #endif // QT_CONFIG(shortcut)
         self.btnOpen.setText(QCoreApplication.translate(
             "windowMainWindow", u"Open Directory", None))
+        self.btnMusicManager.setText(
+            QCoreApplication.translate("windowMainWindow", u"...", None))
         self.chkboxCool.setText(QCoreApplication.translate(
             "windowMainWindow", u"Transitions", None))
         self.chkboxInclude.setText(QCoreApplication.translate(
             "windowMainWindow", u"Include \"s\" on things", None))
+    # retranslateUi
 
 
 class MainWindow(QMainWindow, Ui_windowMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
-
+        self.actionOpen.triggered.connect(self.openDownloader)
+        self.btnRender.clicked.connect(self.doTheThing)
+        self.btnOpen.clicked.connect(self.openFolder)
+        self.btnMusicManager.clicked.connect(self.openDownloader)
         self.show()
+
+    def log(self, txt):
+        self.txtLogOutput.insertPlainText(f"{txt}\n")
+        self.txtLogOutput.moveCursor(QTextCursor.End)
+
+    def doTheThing(self):
+        self.txtLogOutput.clear()
+        self.btnRender.setEnabled(False)
+        thing = self.txtThing.text()
+        count = int(self.txtImgCount.text())
+        cool = self.chkboxCool.isChecked()
+        include = self.chkboxInclude.isChecked()
+        self.videomaker = VideoMaker(thing, count, cool, include)
+        self.videoThread = QThread()
+        self.videomaker.moveToThread(self.videoThread)
+        self.videoThread.started.connect(self.videomaker.run)
+        self.videomaker.finished.connect(self.videoThread.quit)
+        self.videomaker.finished.connect(self.videomaker.deleteLater)
+        self.videoThread.finished.connect(self.videoThread.deleteLater)
+        self.videomaker.progress.connect(self.progressBar.setValue)
+        self.videomaker.addToLog.connect(self.log)
+        self.videoThread.start()
+        self.videoThread.finished.connect(
+            lambda: self.btnRender.setEnabled(True))
+
+    def openFolder(self):
+        url = QUrl.fromLocalFile(bumblepath)
+        QDesktopServices.openUrl(url)
+
+    def openDownloader(self):
+        dl = DownloadAlert(self)
+        dl.exec()
+
+    # TODO replace context menu with downloader button
 
 
 if __name__ == '__main__':
-    from main_html_scrape_ultra_super_low_bitrate import (_doIt, bumblepath,
-                                                          doIt)
+    from DownloadAlert import DownloadAlert
+    from main_html_scrape_ultra_super_low_bitrate import (VideoMaker,
+                                                          bumblepath)
     app = QApplication([])
     app.setStyleSheet(qdarktheme.load_stylesheet())
     window = MainWindow()
