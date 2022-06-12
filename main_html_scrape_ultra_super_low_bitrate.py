@@ -12,6 +12,7 @@ from PIL import Image
 import logging
 from PySide6.QtCore import QObject, Signal
 from time import perf_counter
+from main import convertTime
 #####################################################
 # PARMETERS SECTION
 
@@ -190,7 +191,7 @@ class VideoMaker(QObject):
             self.updateBar(finalvideo, filepath)
             log("Done!")
             end = perf_counter()
-            log(f"Time elapsed: {round(end-start, 2)}s")
+            log(f"Time elapsed: {convertTime(round(end-start))}")
             self.finished.emit()
         except Exception as e:
             logging.error(e)
