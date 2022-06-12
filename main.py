@@ -173,15 +173,10 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
     def updateEstimation(self):
         try:
             x = int(self.txtImgCount.text())
-            seconds = round((0.00147023*(x**2))+(0.32968*x)+1.6266)
-            minutes, seconds = divmod(seconds, 60)
-            hours, minutes = divmod(minutes, 60)
-            hours = f"0{hours}" if hours < 10 else hours
-            minutes = f"0{minutes}" if minutes < 10 else minutes
-            seconds = f"0{seconds}" if seconds < 10 else seconds
+            seconds = round((0.394376*x)+1.66405)
 
             self.lblEstimation.setText(
-                f"Estimated time: {hours}:{minutes}:{seconds}")
+                f"Estimated time: {convertTime(seconds)}")
         except:
             pass
 
@@ -213,7 +208,14 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
         dl = DownloadAlert(self)
         dl.exec()
 
-    # TODO replace context menu with downloader button
+
+def convertTime(seconds):
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    hours = f"0{hours}" if hours < 10 else hours
+    minutes = f"0{minutes}" if minutes < 10 else minutes
+    seconds = f"0{seconds}" if seconds < 10 else seconds
+    return f"{hours}:{minutes}:{seconds}"
 
 
 if __name__ == '__main__':
