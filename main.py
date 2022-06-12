@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout,
                                QHBoxLayout, QLabel, QLineEdit, QMainWindow,
                                QProgressBar, QPushButton, QTextEdit,
                                QToolButton, QVBoxLayout, QWidget)
+
 import icon_rc
 
 

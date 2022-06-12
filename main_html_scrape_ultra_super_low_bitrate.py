@@ -1,18 +1,20 @@
+import logging
 import os
 from contextlib import redirect_stderr
 from io import BytesIO, StringIO
 from os import path
 from secrets import SystemRandom
+from time import perf_counter
 
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
 from moviepy.editor import *
 from PIL import Image
-import logging
 from PySide6.QtCore import QObject, Signal
-from time import perf_counter
+
 from main import convertTime
+
 #####################################################
 # PARMETERS SECTION
 
