@@ -27,11 +27,16 @@ rand = SystemRandom()
 basedir = path.normpath(path.expanduser("~"))
 bumblepath = path.join(
     basedir, "Videos", "bumblefolder")
-logging.basicConfig(filename=path.join(bumblepath, "log.log"))
 exportpath = path.join(bumblepath, "output")
 musicpath = path.join(bumblepath, "music")
 # cool = input("cool transitions and details? (y/n): ")
 # include = input("include 's' on name? (y/n): ")
+if not path.isdir(exportpath):
+    os.makedirs(exportpath)
+
+if not path.isdir(musicpath):
+    os.makedirs(musicpath)
+logging.basicConfig(filename=path.join(bumblepath, "log.log"))
 
 
 class VideoMaker(QObject):
@@ -61,11 +66,6 @@ class VideoMaker(QObject):
         introtext = f"top {self.count} \n{self.thing}"
         if self.include:
             introtext += "s"
-        if not path.isdir(exportpath):
-            os.makedirs(exportpath)
-
-        if not path.isdir(musicpath):
-            os.makedirs(musicpath)
 
     # you can't just drop in another website, I did this specifically to work with google images
     ####################################################
