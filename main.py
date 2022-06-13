@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
+import math
 import sys
 
 import qdarktheme
@@ -38,6 +39,12 @@ class Ui_windowMainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.txtLogOutput = QTextEdit(self.centralwidget)
+        self.txtLogOutput.setObjectName(u"txtLogOutput")
+        self.txtLogOutput.setReadOnly(True)
+
+        self.gridLayout.addWidget(self.txtLogOutput, 2, 0, 1, 1)
+
         self.progressBar = QProgressBar(self.centralwidget)
         self.progressBar.setObjectName(u"progressBar")
         self.progressBar.setMaximumSize(QSize(16777215, 10))
@@ -108,15 +115,15 @@ class Ui_windowMainWindow(object):
 
         self.verticalLayout_3.addWidget(self.lblEstimation)
 
+        self.lblFilesize = QLabel(self.centralwidget)
+        self.lblFilesize.setObjectName(u"lblFilesize")
+        self.lblFilesize.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_3.addWidget(self.lblFilesize)
+
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
 
         self.gridLayout.addLayout(self.horizontalLayout_2, 0, 0, 1, 1)
-
-        self.txtLogOutput = QTextEdit(self.centralwidget)
-        self.txtLogOutput.setObjectName(u"txtLogOutput")
-        self.txtLogOutput.setReadOnly(True)
-
-        self.gridLayout.addWidget(self.txtLogOutput, 2, 0, 1, 1)
 
         windowMainWindow.setCentralWidget(self.centralwidget)
 
@@ -153,6 +160,8 @@ class Ui_windowMainWindow(object):
             "windowMainWindow", u"Include \"s\" on things", None))
         self.lblEstimation.setText(QCoreApplication.translate(
             "windowMainWindow", u"Estimated Time: 00:00:00", None))
+        self.lblFilesize.setText(QCoreApplication.translate(
+            "windowMainWindow", u"Estimated Size: 0 MB", None))
     # retranslateUi
 
 
@@ -165,6 +174,7 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
         self.btnOpen.clicked.connect(self.openFolder)
         self.btnMusicManager.clicked.connect(self.openDownloader)
         self.txtImgCount.textChanged.connect(self.updateEstimation)
+        self.txtImgCount.textChanged.connect(self.updateFilesize)
         self.show()
 
     def log(self, txt):
@@ -178,6 +188,15 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
 
             self.lblEstimation.setText(
                 f"Estimated time: {convertTime(seconds)}")
+        except:
+            pass
+
+    def updateFilesize(self):
+        try:
+            x = int(self.txtImgCount.text())
+            bytes = round((38303.8*x)+14741.4)
+            self.lblFilesize.setText(
+                f"Estimated Size: {convertBytes(bytes)}")
         except:
             pass
 
@@ -217,6 +236,13 @@ def convertTime(seconds):
     minutes = f"0{minutes}" if minutes < 10 else minutes
     seconds = f"0{seconds}" if seconds < 10 else seconds
     return f"{hours}:{minutes}:{seconds}"
+
+
+def convertBytes(bytes):
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+    i = math.floor(math.log(bytes, 1024))
+    p = 1024 ** i
+    return f"{round(bytes/p, 2)} {size_name[i]}"
 
 
 if __name__ == '__main__':
