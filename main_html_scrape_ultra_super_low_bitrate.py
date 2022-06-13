@@ -193,7 +193,7 @@ class VideoMaker(QObject):
             filepath = f"{exportpath}/{self.thing}.mp4"
             self.updateBar(finalvideo, filepath)
             end = perf_counter()
-            log(f"Time elapsed: {convertTime(round(end-start, 2))}")
+            log(f"Time elapsed: {convertTime(round(end-start))}")
             self.finished.emit()
         except Exception as e:
             logging.error(e)
