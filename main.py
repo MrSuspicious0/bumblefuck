@@ -174,7 +174,7 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
     def updateEstimation(self):
         try:
             x = int(self.txtImgCount.text())
-            seconds = round((0.394376*x)+1.66405)
+            seconds = round((0.374032*x)+1.48253)
 
             self.lblEstimation.setText(
                 f"Estimated time: {convertTime(seconds)}")
