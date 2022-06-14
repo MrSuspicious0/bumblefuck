@@ -194,7 +194,7 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
     def updateFilesize(self):
         try:
             x = int(self.txtImgCount.text())
-            bytes = round((38303.8*x)+14741.4)
+            bytes = round((38199.5*x)+15698.6)
             self.lblFilesize.setText(
                 f"Estimated Size: {convertBytes(bytes)}")
         except:

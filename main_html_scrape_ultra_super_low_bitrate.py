@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from moviepy.editor import *
 from PIL import Image
 from PySide6.QtCore import QObject, Signal
-
+from pyperclip import copy
 from main import convertTime
 
 #####################################################
@@ -193,6 +193,7 @@ class VideoMaker(QObject):
             filepath = f"{exportpath}/{self.thing}.mp4"
             self.updateBar(finalvideo, filepath)
             end = perf_counter()
+            copy(path.getsize(path.normpath(filepath)))
             log(f"Time elapsed: {convertTime(round(end-start))}")
             self.finished.emit()
         except Exception as e:
