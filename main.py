@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
+from functools import partial
 import math
 import sys
 
@@ -19,7 +20,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout,
                                QHBoxLayout, QLabel, QLineEdit, QMainWindow,
                                QProgressBar, QPushButton, QTextEdit,
                                QToolButton, QVBoxLayout, QWidget)
-
+from win10toast_click import ToastNotifier
 import icon_rc
 
 
@@ -166,6 +167,7 @@ class Ui_windowMainWindow(object):
 
 
 class MainWindow(QMainWindow, Ui_windowMainWindow):
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
@@ -176,6 +178,10 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
         self.txtImgCount.textChanged.connect(self.updateEstimation)
         self.txtImgCount.textChanged.connect(self.updateFilesize)
         self.show()
+
+    def finishNotification(self, thing, count, filepath):
+        notifier.show_toast(
+            "bumblefuck", f"your top {count} {thing} has finished rendering, click here to open it.", "icon.ico", 5, True, partial(self.openFile, filepath))
 
     def log(self, txt):
         self.txtLogOutput.insertPlainText(f"{txt}\n")
@@ -201,27 +207,35 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
             pass
 
     def doTheThing(self):
-        self.txtLogOutput.clear()
-        self.btnRender.setEnabled(False)
-        thing = self.txtThing.text()
-        count = int(self.txtImgCount.text())
-        cool = self.chkboxCool.isChecked()
-        include = self.chkboxInclude.isChecked()
-        self.videomaker = VideoMaker(thing, count, cool, include)
-        self.videoThread = QThread()
-        self.videomaker.moveToThread(self.videoThread)
-        self.videoThread.started.connect(self.videomaker.run)
-        self.videomaker.finished.connect(self.videoThread.quit)
-        self.videomaker.finished.connect(self.videomaker.deleteLater)
-        self.videoThread.finished.connect(self.videoThread.deleteLater)
-        self.videomaker.progress.connect(self.progressBar.setValue)
-        self.videomaker.addToLog.connect(self.log)
-        self.videoThread.start()
-        self.videoThread.finished.connect(
-            lambda: self.btnRender.setEnabled(True))
+        try:
+            self.txtLogOutput.clear()
+            self.btnRender.setEnabled(False)
+            thing = self.txtThing.text()
+            count = int(self.txtImgCount.text())
+            cool = self.chkboxCool.isChecked()
+            include = self.chkboxInclude.isChecked()
+            self.videomaker = VideoMaker(thing, count, cool, include)
+            self.videoThread = QThread()
+            self.videomaker.moveToThread(self.videoThread)
+            self.videoThread.started.connect(self.videomaker.run)
+            self.videomaker.finished.connect(self.videoThread.quit)
+            self.videomaker.finished.connect(self.videomaker.deleteLater)
+            self.videoThread.finished.connect(self.videoThread.deleteLater)
+            self.videomaker.progress.connect(self.progressBar.setValue)
+            self.videomaker.addToLog.connect(self.log)
+            self.videoThread.start()
+            self.videomaker.notify.connect(self.finishNotification)
+            self.videoThread.finished.connect(
+                lambda: self.btnRender.setEnabled(True))
+        except:
+            self.btnRender.setEnabled(True)
 
     def openFolder(self):
         url = QUrl.fromLocalFile(bumblepath)
+        QDesktopServices.openUrl(url)
+
+    def openFile(self, filepath):
+        url = QUrl.fromLocalFile(filepath)
         QDesktopServices.openUrl(url)
 
     def openDownloader(self):
@@ -249,6 +263,7 @@ if __name__ == '__main__':
     from DownloadAlert import DownloadAlert
     from main_html_scrape_ultra_super_low_bitrate import VideoMaker, bumblepath
     app = QApplication([])
+    notifier = ToastNotifier()
     app.setStyleSheet(qdarktheme.load_stylesheet())
     window = MainWindow()
 
