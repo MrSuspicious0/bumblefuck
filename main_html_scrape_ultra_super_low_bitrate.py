@@ -42,6 +42,7 @@ class VideoMaker(QObject):
     progress = Signal(int)
     finished = Signal()
     addToLog = Signal(str)
+    notify = Signal(str, int, str)
 
     def __init__(self, thing, count, cool, include):
         super().__init__()
@@ -194,6 +195,7 @@ class VideoMaker(QObject):
             end = perf_counter()
             # copy(path.getsize(path.normpath(filepath)))
             log(f"Time elapsed: {convertTime(round(end-start))}")
+            self.notify.emit(self.thing, self.count, filepath)
             self.finished.emit()
         except Exception as e:
             logging.error(e)
