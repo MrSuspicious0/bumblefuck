@@ -43,6 +43,7 @@ class VideoMaker(QObject):
     finished = Signal()
     addToLog = Signal(str)
     notify = Signal(str, int, str)
+    error = Signal()
 
     def __init__(self, thing, count, cool, include):
         super().__init__()
@@ -67,139 +68,147 @@ class VideoMaker(QObject):
         if self.include:
             introtext += "s"
 
-    # you can't just drop in another website, I did this specifically to work with google images
-    ####################################################
-
-        url = f"https://www.google.com/search?tbm=isch&oq=&aqs=&q={self.thing.replace(' ', '+')}"
-
-        imglinks = list()
-        while len(imglinks) < randomhandfulcount:
-            page = requests.get(url)
-            soup = BeautifulSoup(page.content, "lxml")
-            imgs = soup.find_all("img", {"class": "yWs4tf"})
-            for img in imgs:
-                imglinks.append(img.get("src"))
-
-            nextBtn = soup.find_all("a", {"class": "frGj1b"})
-            match len(nextBtn):
-                case 1:
-                    nextUrl = nextBtn[0].get("href")
-                case 2:
-                    nextUrl = nextBtn[1].get("href")
-                case _:
-                    pass
-
-            url = f"https://google.com{nextUrl}"
-
-            # print("got " + str(len(imglinks)) + " images...")
-            log(f"got {len(imglinks)} images...")
-
-        imageresults = []
-
-        log("downloading and shuffling images...")
-        _imglinks = rand.sample(imglinks, self.count)
-        for x in _imglinks:
-            temp_img = Image.open(
-                BytesIO(requests.get(x).content))
-
-            imageresults.append(temp_img)
-
-        rand.shuffle(imageresults)
-
-        # temp_img.show()
-
-        # time.sleep(100000)
-        # just dont try and do the rest
-
-        log("checking directories...")
-
-        log("starting video creation...")
-
         try:
-            if self.cool:
-                color = ColorClip(size=RESOLUTION, duration=2.5,
-                                  color=[66, 128, 214])
-                intro = TextClip(introtext, fontsize=35, color='white', font='Comic-Sans-MS',
-                                 size=RESOLUTION).set_pos('center').set_duration(2.5).crossfadein(0.3)
+            url = f"https://www.google.com/search?tbm=isch&oq=&aqs=&q={self.thing.replace(' ', '+')}"
 
-                introshadow = intro.invert_colors().set_position(
-                    ((RESOLUTION[0] * 0.01), (RESOLUTION[1] * 0.01))).crossfadein(0.3)
-                introshadow = introshadow.crossfadein(0.3)
+            imglinks = list()
+            while len(imglinks) < randomhandfulcount:
+                page = requests.get(url)
+                soup = BeautifulSoup(page.content, "lxml")
+                imgs = soup.find_all("img", {"class": "yWs4tf"})
+                for img in imgs:
+                    imglinks.append(img.get("src"))
 
-                intro = CompositeVideoClip([color, introshadow, intro])
+                nextBtn = soup.find_all("a", {"class": "frGj1b"})
+                match len(nextBtn):
+                    case 1:
+                        nextUrl = nextBtn[0].get("href")
+                    case 2:
+                        nextUrl = nextBtn[1].get("href")
+                    case _:
+                        pass
 
-            else:
-                color = ColorClip(size=RESOLUTION, duration=2.5,
-                                  color=[66, 128, 214])
-                intro = TextClip(introtext, fontsize=35, color='white', font='Comic-Sans-MS',
-                                 size=RESOLUTION).set_pos('center').set_duration(2.5)
+                url = f"https://google.com{nextUrl}"
 
-                intro = CompositeVideoClip([color, intro])
+                log(f"got {len(imglinks)} images...")
 
-            cliplist = [intro]
+            imageresults = []
 
-            index = 0
+            log("downloading and shuffling images...")
+            _imglinks = rand.sample(imglinks, self.count)
+            for (i, x) in enumerate(_imglinks):
+                a = requests.get(x)
+                if a.status_code == 200:
+                    log(f"downloading image {i+1}...")
+                    temp_img = Image.open(
+                        BytesIO(a.content))
 
-            samples = rand.sample(imageresults, self.count)
+                    imageresults.append(temp_img)
+                else:
+                    log(
+                        f"Unable to retrieve sufficient images, stopping at {len(imageresults)}")
+                    break
 
-            for x in samples:
+            rand.shuffle(imageresults)
+
+            # temp_img.show()
+
+            # time.sleep(100000)
+            # just dont try and do the rest
+
+            log("checking directories...")
+
+            log("starting video creation...")
+
+            try:
                 if self.cool:
-                    numberclip = TextClip("number \n" + str(self.count - index), fontsize=35,
-                                          color='white', font='Comic-Sans-MS', size=RESOLUTION)
-                    numberclip = numberclip.set_pos(
-                        'center').set_duration(2.5).crossfadein(0.3)
+                    color = ColorClip(size=RESOLUTION, duration=2.5,
+                                      color=[66, 128, 214])
+                    intro = TextClip(introtext, fontsize=35, color='white', font='Comic-Sans-MS',
+                                     size=RESOLUTION).set_pos('center').set_duration(2.5).crossfadein(0.3)
 
-                    numberclipshadow = numberclip.invert_colors().set_position(
-                        ((RESOLUTION[0] * 0.01), (RESOLUTION[1] * 0.01)))
-                    numberclipshadow = numberclipshadow.crossfadein(0.3)
+                    introshadow = intro.invert_colors().set_position(
+                        ((RESOLUTION[0] * 0.01), (RESOLUTION[1] * 0.01))).crossfadein(0.3)
+                    introshadow = introshadow.crossfadein(0.3)
 
-                    numberclip = CompositeVideoClip(
-                        [color, numberclipshadow, numberclip])
+                    intro = CompositeVideoClip([color, introshadow, intro])
 
                 else:
-                    numberclip = TextClip("number \n" + str(self.count - index), fontsize=35,
-                                          color='white', font='Comic-Sans-MS', size=RESOLUTION)
-                    numberclip = numberclip.set_pos('center').set_duration(2.5)
+                    color = ColorClip(size=RESOLUTION, duration=2.5,
+                                      color=[66, 128, 214])
+                    intro = TextClip(introtext, fontsize=35, color='white', font='Comic-Sans-MS',
+                                     size=RESOLUTION).set_pos('center').set_duration(2.5)
 
-                    numberclip = CompositeVideoClip([color, numberclip])
+                    intro = CompositeVideoClip([color, intro])
 
-                temp_img = x
+                cliplist = [intro]
 
-                imageclip = ImageClip(img=np.array(temp_img)).resize(
-                    RESOLUTION).set_duration(3)
+                index = 0
 
-                cliplist.append(numberclip)
-                cliplist.append(imageclip)
+                samples = rand.sample(imageresults, self.count)
 
-                index += 1
+                for x in samples:
+                    if self.cool:
+                        numberclip = TextClip("number \n" + str(self.count - index), fontsize=35,
+                                              color='white', font='Comic-Sans-MS', size=RESOLUTION)
+                        numberclip = numberclip.set_pos(
+                            'center').set_duration(2.5).crossfadein(0.3)
 
-            finalvideo = concatenate_videoclips(cliplist)
+                        numberclipshadow = numberclip.invert_colors().set_position(
+                            ((RESOLUTION[0] * 0.01), (RESOLUTION[1] * 0.01)))
+                        numberclipshadow = numberclipshadow.crossfadein(0.3)
 
-            if len(os.listdir(musicpath)) != 0:
+                        numberclip = CompositeVideoClip(
+                            [color, numberclipshadow, numberclip])
 
-                musiclist = []
-                for x in os.listdir(musicpath):
-                    musiclist.append(AudioFileClip(musicpath + "/" + x))
+                    else:
+                        numberclip = TextClip("number \n" + str(self.count - index), fontsize=35,
+                                              color='white', font='Comic-Sans-MS', size=RESOLUTION)
+                        numberclip = numberclip.set_pos(
+                            'center').set_duration(2.5)
 
-                rand.shuffle(musiclist)
+                        numberclip = CompositeVideoClip([color, numberclip])
 
-                musiclist = concatenate_audioclips(musiclist)
+                    temp_img = x
 
-                musiclist = musiclist.set_duration(
-                    finalvideo.duration).set_fps(1)
+                    imageclip = ImageClip(img=np.array(temp_img)).resize(
+                        RESOLUTION).set_duration(3)
 
-                finalvideo.audio = musiclist
+                    cliplist.append(numberclip)
+                    cliplist.append(imageclip)
+                    log(f"added image {index+1}...")
+                    index += 1
 
-            filepath = f"{exportpath}/{self.thing}.mp4"
-            self.updateBar(finalvideo, filepath)
-            end = perf_counter()
-            # copy(path.getsize(path.normpath(filepath)))
-            log(f"Time elapsed: {convertTime(round(end-start))}")
-            self.notify.emit(self.thing, self.count, filepath)
-            self.finished.emit()
+                finalvideo = concatenate_videoclips(cliplist)
+
+                if len(os.listdir(musicpath)) != 0:
+
+                    musiclist = []
+                    for x in os.listdir(musicpath):
+                        musiclist.append(AudioFileClip(musicpath + "/" + x))
+
+                    rand.shuffle(musiclist)
+
+                    musiclist = concatenate_audioclips(musiclist)
+
+                    musiclist = musiclist.set_duration(
+                        finalvideo.duration).set_fps(1)
+
+                    finalvideo.audio = musiclist
+
+                filepath = f"{exportpath}/{self.thing}.mp4"
+                self.updateBar(finalvideo, filepath)
+                end = perf_counter()
+                # copy(path.getsize(path.normpath(filepath)))
+                log(f"Time elapsed: {convertTime(round(end-start))}")
+                self.notify.emit(self.thing, self.count, filepath)
+                self.finished.emit()
+            except Exception as e:
+                logging.error(e)
         except Exception as e:
             logging.error(e)
-            log(e)
+            log("Error during video creation, see log file for more info.")
+            self.error.emit()
 
 
 class BarReader(StringIO):

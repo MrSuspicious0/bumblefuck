@@ -8,9 +8,9 @@
 # WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from functools import partial
 import math
 import sys
+from functools import partial
 
 import qdarktheme
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QSize, Qt, QThread,
@@ -20,7 +20,9 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout,
                                QHBoxLayout, QLabel, QLineEdit, QMainWindow,
                                QProgressBar, QPushButton, QTextEdit,
                                QToolButton, QVBoxLayout, QWidget)
+# from PyTaskbar import Progress
 from win10toast_click import ToastNotifier
+
 import icon_rc
 
 
@@ -227,6 +229,9 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
             self.videomaker.notify.connect(self.finishNotification)
             self.videoThread.finished.connect(
                 lambda: self.btnRender.setEnabled(True))
+            self.videomaker.error.connect(
+                lambda: self.btnRender.setEnabled(True))
+            self.videomaker.error.connect(self.videoThread.quit)
         except:
             self.btnRender.setEnabled(True)
 
@@ -264,6 +269,9 @@ if __name__ == '__main__':
     from main_html_scrape_ultra_super_low_bitrate import VideoMaker, bumblepath
     app = QApplication([])
     notifier = ToastNotifier()
+    # taskbar = Progress()
+    # taskbar.init()
+
     app.setStyleSheet(qdarktheme.load_stylesheet())
     window = MainWindow()
 
