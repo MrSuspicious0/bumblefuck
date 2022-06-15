@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>378</width>
+    <width>362</width>
     <height>231</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>378</width>
+    <width>362</width>
     <height>231</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>378</width>
+    <width>362</width>
     <height>231</height>
    </size>
   </property>
@@ -31,13 +31,6 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="0">
-     <widget class="QTextEdit" name="txtLogOutput">
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="0">
      <widget class="QProgressBar" name="progressBar">
       <property name="maximumSize">
@@ -95,15 +88,8 @@
             </item>
             <item>
              <widget class="QToolButton" name="btnMusicManager">
-              <property name="toolTip">
-               <string>Music Manager</string>
-              </property>
               <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="icon.qrc">
-                <normaloff>:/dancingbee.ico</normaloff>:/dancingbee.ico</iconset>
+               <string>...</string>
               </property>
              </widget>
             </item>
@@ -132,35 +118,16 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QLabel" name="lblEstimation">
-          <property name="maximumSize">
-           <size>
-            <width>133</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Estimated Time: 00:00:00</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="lblFilesize">
-          <property name="text">
-           <string>Estimated Size: 0 MB</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
      </layout>
+    </item>
+    <item row="2" column="0">
+     <widget class="QTextEdit" name="txtLogOutput">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
