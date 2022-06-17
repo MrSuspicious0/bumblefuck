@@ -89,7 +89,11 @@
             <item>
              <widget class="QToolButton" name="btnMusicManager">
               <property name="text">
-               <string>...</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icon.qrc">
+                <normaloff>:/dancingbee.ico</normaloff>:/dancingbee.ico</iconset>
               </property>
              </widget>
             </item>
@@ -118,14 +122,43 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QLabel" name="lblEstimation">
+          <property name="text">
+           <string>Estimated Time: 00:00:00</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblFilesize">
+          <property name="text">
+           <string>Estimated Size: 0 MB</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>
     </item>
     <item row="2" column="0">
      <widget class="QTextEdit" name="txtLogOutput">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="undoRedoEnabled">
+       <bool>false</bool>
+      </property>
       <property name="readOnly">
        <bool>true</bool>
+      </property>
+      <property name="textInteractionFlags">
+       <set>Qt::NoTextInteraction</set>
       </property>
      </widget>
     </item>
