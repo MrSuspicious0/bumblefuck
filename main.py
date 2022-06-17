@@ -173,6 +173,7 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.group = (self.txtImgCount, self.txtThing, self.btnRender)
         self.actionOpen.triggered.connect(self.openDownloader)
         self.btnRender.clicked.connect(self.doTheThing)
         self.btnOpen.clicked.connect(self.openFolder)
@@ -208,10 +209,15 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
         except:
             pass
 
+    def showHide(self, x: bool):
+        for e in self.group:
+            e.setEnabled(x)
+
     def doTheThing(self):
         try:
+
             self.txtLogOutput.clear()
-            self.btnRender.setEnabled(False)
+            self.showHide(False)
             thing = self.txtThing.text()
             count = int(self.txtImgCount.text())
             cool = self.chkboxCool.isChecked()
@@ -227,10 +233,7 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
             self.videomaker.addToLog.connect(self.log)
             self.videoThread.start()
             self.videomaker.notify.connect(self.finishNotification)
-            self.videoThread.finished.connect(
-                lambda: self.btnRender.setEnabled(True))
-            self.videomaker.error.connect(
-                lambda: self.btnRender.setEnabled(True))
+            self.videoThread.finished.connect(lambda: self.showHide(True))
             self.videomaker.error.connect(self.videoThread.quit)
         except:
             self.btnRender.setEnabled(True)
