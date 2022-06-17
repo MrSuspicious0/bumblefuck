@@ -1,30 +1,15 @@
-# -*- coding: utf-8 -*-
-
-################################################################################
-# Form generated from reading UI file 'mainwindow.ui'
-##
-# Created by: Qt User Interface Compiler version 6.3.0
-##
-# WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
-
 import math
 import sys
 from functools import partial
 
 import qdarktheme
-from PySide6.QtCore import (QCoreApplication, QMetaObject, QSize, Qt, QThread,
-                            QUrl)
-from PySide6.QtGui import QAction, QDesktopServices, QIcon, QTextCursor
-from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout,
-                               QHBoxLayout, QLabel, QLineEdit, QMainWindow,
-                               QProgressBar, QPushButton, QTextEdit,
-                               QToolButton, QVBoxLayout, QWidget)
-# from PyTaskbar import Progress
-from ui_main import Ui_windowMainWindow
+from PySide6.QtCore import QThread, QUrl
+from PySide6.QtGui import QDesktopServices, QTextCursor
+from PySide6.QtWidgets import QApplication, QMainWindow
 from win10toast_click import ToastNotifier
 
 import icon_rc
+from ui_main import Ui_windowMainWindow
 
 
 class MainWindow(QMainWindow, Ui_windowMainWindow):

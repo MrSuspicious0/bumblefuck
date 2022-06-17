@@ -56,7 +56,7 @@ class VideoMaker(QObject):
         with redirect_stderr(BarReader(self.progress)):
 
             finalvideo.write_videofile(
-                filepath, fps=self.FPS, audio_bitrate="45k", bitrate="6k", threads=16, preset="ultrafast", temp_audiofile_path=exportpath)
+                filepath, temp_audiofile=f"{exportpath}/temp_audio.mp3", fps=self.FPS, audio_bitrate="45k", bitrate="6k", threads=16, preset="ultrafast")
 
     def run(self):
         start = perf_counter()
