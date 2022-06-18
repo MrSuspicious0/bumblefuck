@@ -11,6 +11,7 @@ class DownloadAlert(QDialog, Ui_windowAlert):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.videos = list()
+        self.parent_ = parent
         self.setupUi(self)
         # TODO figure out these signals for threaded UI change
         self.listWidget.setAlternatingRowColors(True)
@@ -31,6 +32,7 @@ class DownloadAlert(QDialog, Ui_windowAlert):
 
     def addItem(self):
         url = self.txtInput.text()
+        self.parent_.showHide(False)
         if not url.startswith("http"):
             pass
         else:
@@ -52,8 +54,11 @@ class DownloadAlert(QDialog, Ui_windowAlert):
                 lambda: self.btnDownload.setEnabled(True))
             self.addThread.finished.connect(
                 lambda: self.btnAdd.setEnabled(True))
+            self.addThread.finished.connect(
+                lambda: self.parent_.showHide(True))
 
     def downloadVideos(self):
+        self.parent_.showHide(False)
         self.btnAdd.setEnabled(False)
         self.btnDownload.setEnabled(False)
         self.progressBar.setMaximum(len(self.videos))
@@ -71,6 +76,8 @@ class DownloadAlert(QDialog, Ui_windowAlert):
         self.downloadThread.finished.connect(
             lambda: self.btnDownload.setEnabled(True))
         self.downloadThread.finished.connect(lambda: self.videos.clear())
+        self.downloadThread.finished.connect(
+            lambda: self.parent_.showHide(True))
 
     def removeItems(self):
         items = self.listWidget.selectedItems()
