@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from win10toast_click import ToastNotifier
 
 import icon_rc
-from ui_main import Ui_windowMainWindow
+from mainwindowUI import Ui_windowMainWindow
 
 
 class MainWindow(QMainWindow, Ui_windowMainWindow):

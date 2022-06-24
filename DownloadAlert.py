@@ -1,5 +1,6 @@
 import qdarktheme
-from PySide6.QtCore import QThread, Signal
+from PySide6.QtCore import QObject, QThread, Signal
+from PySide6.QtWidgets import QApplication, QDialog
 from pytube import Playlist, YouTube
 
 from download import *

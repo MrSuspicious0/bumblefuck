@@ -2,7 +2,7 @@ import logging
 import os
 from contextlib import redirect_stderr
 from io import BytesIO, StringIO
-from os import path
+from pathlib import Path
 from secrets import SystemRandom
 from time import perf_counter
 
@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 from moviepy.editor import *
 from PIL import Image
 from PySide6.QtCore import QObject, Signal
+
 from main import convertTime
 
 #####################################################
@@ -21,21 +22,13 @@ RESOLUTION = (240, 140)
 FPS = 8
 rand = SystemRandom()
 
-# thing = input("thing: ")
-# count = int(input("count: "))
-basedir = path.normpath(path.expanduser("~"))
-bumblepath = path.join(
-    basedir, "Videos", "bumblefolder")
-exportpath = path.join(bumblepath, "output")
-musicpath = path.join(bumblepath, "music")
-# cool = input("cool transitions and details? (y/n): ")
-# include = input("include 's' on name? (y/n): ")
-if not path.isdir(exportpath):
-    os.makedirs(exportpath)
-
-if not path.isdir(musicpath):
-    os.makedirs(musicpath)
-logging.basicConfig(filename=path.join(bumblepath, "log.log"))
+bumblepath = Path(Path.home(), "Videos", "bumblefolder")
+exportpath = bumblepath / "output"
+musicpath = bumblepath / "music"
+exportpath.mkdir(parents=True, exist_ok=True)
+musicpath.mkdir(parents=True, exist_ok=True)
+logfile = bumblepath / "log.log"
+logging.basicConfig(filename=logfile)
 
 
 class VideoMaker(QObject):
@@ -52,11 +45,11 @@ class VideoMaker(QObject):
         self.cool = cool
         self.include = include
 
-    def updateBar(self, finalvideo, filepath):
+    def updateBar(self, finalvideo, filepath: Path):
         with redirect_stderr(BarReader(self.progress)):
 
             finalvideo.write_videofile(
-                filepath, temp_audiofile=f"{exportpath}/temp_audio.mp3", fps=self.FPS, audio_bitrate="45k", bitrate="6k", threads=16, preset="ultrafast")
+                f"{filepath}", temp_audiofile=f"{exportpath/'temp_audio.mp3'}", fps=self.FPS, audio_bitrate="45k", bitrate="6k", threads=16, preset="ultrafast")
 
     def run(self):
         start = perf_counter()
@@ -196,7 +189,7 @@ class VideoMaker(QObject):
 
                     finalvideo.audio = musiclist
 
-                filepath = f"{exportpath}/{self.thing}.mp4"
+                filepath = exportpath / f"{self.thing}.mp4"
                 self.updateBar(finalvideo, filepath)
                 end = perf_counter()
                 # copy(path.getsize(path.normpath(filepath)))

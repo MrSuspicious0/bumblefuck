@@ -8,11 +8,10 @@
 # WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import QCoreApplication, QMetaObject, QObject, QSize
+from PySide6.QtCore import QCoreApplication, QMetaObject, QSize
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import (QApplication, QDialog, QGridLayout, QHBoxLayout,
-                               QLineEdit, QListWidget, QProgressBar,
-                               QPushButton, QVBoxLayout)
+from PySide6.QtWidgets import (QGridLayout, QHBoxLayout, QLineEdit, QListWidget,
+                               QProgressBar, QPushButton, QVBoxLayout)
 
 import icon_rc
 

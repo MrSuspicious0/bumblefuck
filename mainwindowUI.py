@@ -1,26 +1,11 @@
-# -*- coding: utf-8 -*-
+from PySide6.QtCore import QCoreApplication, QMetaObject, QSize, Qt
+from PySide6.QtGui import QAction, QIcon
+from PySide6.QtWidgets import (QCheckBox, QGridLayout, QHBoxLayout, QLabel,
+                               QLineEdit, QProgressBar, QPushButton, QTextEdit,
+                               QToolButton, QVBoxLayout, QWidget)
 
-################################################################################
-## Form generated from reading UI file 'mainwindow.ui'
-##
-## Created by: Qt User Interface Compiler version 6.3.0
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
-
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
-    QCursor, QFont, QFontDatabase, QGradient,
-    QIcon, QImage, QKeySequence, QLinearGradient,
-    QPainter, QPalette, QPixmap, QRadialGradient,
-    QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QHBoxLayout,
-    QLabel, QLineEdit, QMainWindow, QProgressBar,
-    QPushButton, QSizePolicy, QTextEdit, QToolButton,
-    QVBoxLayout, QWidget)
 import icon_rc
+
 
 class Ui_windowMainWindow(object):
     def setupUi(self, windowMainWindow):
@@ -82,12 +67,9 @@ class Ui_windowMainWindow(object):
 
         self.horizontalLayout.addWidget(self.btnMusicManager)
 
-
         self.verticalLayout.addLayout(self.horizontalLayout)
 
-
         self.verticalLayout_2.addLayout(self.verticalLayout)
-
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_2)
 
@@ -116,9 +98,7 @@ class Ui_windowMainWindow(object):
 
         self.verticalLayout_3.addWidget(self.lblFilesize)
 
-
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
-
 
         self.gridLayout.addLayout(self.horizontalLayout_2, 0, 0, 1, 1)
 
@@ -139,19 +119,29 @@ class Ui_windowMainWindow(object):
     # setupUi
 
     def retranslateUi(self, windowMainWindow):
-        windowMainWindow.setWindowTitle(QCoreApplication.translate("windowMainWindow", u"bumblefuck", None))
-        self.actionOpen.setText(QCoreApplication.translate("windowMainWindow", u"Open", None))
-        self.txtThing.setPlaceholderText(QCoreApplication.translate("windowMainWindow", u"Thing", None))
-        self.txtImgCount.setPlaceholderText(QCoreApplication.translate("windowMainWindow", u"Count", None))
-        self.btnRender.setText(QCoreApplication.translate("windowMainWindow", u"Render", None))
-#if QT_CONFIG(shortcut)
-        self.btnRender.setShortcut(QCoreApplication.translate("windowMainWindow", u"Return", None))
+        windowMainWindow.setWindowTitle(QCoreApplication.translate(
+            "windowMainWindow", u"bumblefuck", None))
+        self.actionOpen.setText(QCoreApplication.translate(
+            "windowMainWindow", u"Open", None))
+        self.txtThing.setPlaceholderText(
+            QCoreApplication.translate("windowMainWindow", u"Thing", None))
+        self.txtImgCount.setPlaceholderText(
+            QCoreApplication.translate("windowMainWindow", u"Count", None))
+        self.btnRender.setText(QCoreApplication.translate(
+            "windowMainWindow", u"Render", None))
+# if QT_CONFIG(shortcut)
+        self.btnRender.setShortcut(QCoreApplication.translate(
+            "windowMainWindow", u"Return", None))
 #endif // QT_CONFIG(shortcut)
-        self.btnOpen.setText(QCoreApplication.translate("windowMainWindow", u"Open Directory", None))
+        self.btnOpen.setText(QCoreApplication.translate(
+            "windowMainWindow", u"Open Directory", None))
         self.btnMusicManager.setText("")
-        self.chkboxCool.setText(QCoreApplication.translate("windowMainWindow", u"Transitions", None))
-        self.chkboxInclude.setText(QCoreApplication.translate("windowMainWindow", u"Include \"s\" on things", None))
-        self.lblEstimation.setText(QCoreApplication.translate("windowMainWindow", u"Estimated Time: 00:00:00", None))
-        self.lblFilesize.setText(QCoreApplication.translate("windowMainWindow", u"Estimated Size: 0 MB", None))
+        self.chkboxCool.setText(QCoreApplication.translate(
+            "windowMainWindow", u"Transitions", None))
+        self.chkboxInclude.setText(QCoreApplication.translate(
+            "windowMainWindow", u"Include \"s\" on things", None))
+        self.lblEstimation.setText(QCoreApplication.translate(
+            "windowMainWindow", u"Estimated Time: 00:00:00", None))
+        self.lblFilesize.setText(QCoreApplication.translate(
+            "windowMainWindow", u"Estimated Size: 0 MB", None))
     # retranslateUi
-
