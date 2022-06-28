@@ -35,7 +35,7 @@ class VideoMaker(QObject):
     progress = Signal(int)
     finished = Signal()
     addToLog = Signal(str)
-    notify = Signal(str, int, str)
+    notify = Signal(str, int, Path)
     error = Signal()
 
     def __init__(self, thing, count, cool, include):
