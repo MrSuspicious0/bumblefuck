@@ -35,7 +35,7 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
         self.txtLogOutput.insertPlainText(f"{txt}\n")
         self.txtLogOutput.moveCursor(QTextCursor.End)
 
-    def updateEstimation(self):
+    def updateEstimation(self):  # sourcery skip: do-not-use-bare-except
         try:
             x = int(self.txtImgCount.text())
             seconds = round((0.374032*x)+1.48253)
@@ -45,12 +45,12 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
         except:
             pass
 
-    def updateFilesize(self):
+    def updateFilesize(self):  # sourcery skip: do-not-use-bare-except
         try:
             x = int(self.txtImgCount.text())
-            bytes = round((38199.5*x)+15698.6)
+            _bytes = round((38199.5*x)+15698.6)
             self.lblFilesize.setText(
-                f"Estimated Size: {convertBytes(bytes)}")
+                f"Estimated Size: {convertBytes(_bytes)}")
         except:
             pass
 
@@ -58,7 +58,7 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
         for e in self.group:
             e.setEnabled(x)
 
-    def doTheThing(self):
+    def doTheThing(self):  # sourcery skip: do-not-use-bare-except
         try:
 
             self.txtLogOutput.clear()

@@ -39,21 +39,9 @@ class Ui_windowAlert(object):
 
         self.hlayoutButtons = QHBoxLayout()
         self.hlayoutButtons.setObjectName(u"hlayoutButtons")
-        self.btnAdd = QPushButton(windowAlert)
-        self.btnAdd.setObjectName(u"btnAdd")
-
-        self.hlayoutButtons.addWidget(self.btnAdd)
-
-        self.btnRemove = QPushButton(windowAlert)
-        self.btnRemove.setObjectName(u"btnRemove")
-
-        self.hlayoutButtons.addWidget(self.btnRemove)
-
-        self.btnDownload = QPushButton(windowAlert)
-        self.btnDownload.setObjectName(u"btnDownload")
-
-        self.hlayoutButtons.addWidget(self.btnDownload)
-
+        self.btnAdd = self.makeButtons(windowAlert, u"btnAdd")
+        self.btnRemove = self.makeButtons(windowAlert, u"btnRemove")
+        self.btnDownload = self.makeButtons(windowAlert, u"btnDownload")
         self.vlayoutText_Buttons.addLayout(self.hlayoutButtons)
 
         self.vlayoutMaster.addLayout(self.vlayoutText_Buttons)
@@ -76,6 +64,14 @@ class Ui_windowAlert(object):
         self.retranslateUi(windowAlert)
 
         QMetaObject.connectSlotsByName(windowAlert)
+
+    def makeButtons(self, windowAlert, arg1):
+        result = QPushButton(windowAlert)
+        result.setObjectName(arg1)
+
+        self.hlayoutButtons.addWidget(result)
+
+        return result
     # setupUi
 
     def retranslateUi(self, windowAlert):
