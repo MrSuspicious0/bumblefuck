@@ -100,6 +100,7 @@ def convertTime(seconds):
     hours = f"0{hours}" if hours < 10 else hours
     minutes = f"0{minutes}" if minutes < 10 else minutes
     seconds = f"0{seconds}" if seconds < 10 else seconds
+
     return f"{hours}:{minutes}:{seconds}"
 
 
@@ -107,6 +108,7 @@ def convertBytes(bytes):
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
     i = math.floor(math.log(bytes, 1024))
     p = 1024 ** i
+
     return f"{round(bytes/p, 2)} {size_name[i]}"
 
 
