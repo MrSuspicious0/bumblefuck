@@ -1,5 +1,6 @@
 import math
 import sys
+from contextlib import suppress
 from functools import partial
 
 import qdarktheme
@@ -35,30 +36,26 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
         self.txtLogOutput.insertPlainText(f"{txt}\n")
         self.txtLogOutput.moveCursor(QTextCursor.End)
 
-    def updateEstimation(self):  # sourcery skip: do-not-use-bare-except
-        try:
+    def updateEstimation(self):
+        with suppress(Exception):
             x = int(self.txtImgCount.text())
             seconds = round((0.374032*x)+1.48253)
 
             self.lblEstimation.setText(
                 f"Estimated time: {convertTime(seconds)}")
-        except:
-            pass
 
-    def updateFilesize(self):  # sourcery skip: do-not-use-bare-except
-        try:
+    def updateFilesize(self):
+        with suppress(Exception):
             x = int(self.txtImgCount.text())
             _bytes = round((38199.5*x)+15698.6)
             self.lblFilesize.setText(
                 f"Estimated Size: {convertBytes(_bytes)}")
-        except:
-            pass
 
     def showHide(self, x: bool):
         for e in self.group:
             e.setEnabled(x)
 
-    def doTheThing(self):  # sourcery skip: do-not-use-bare-except
+    def doTheThing(self):
         try:
 
             self.txtLogOutput.clear()
@@ -80,7 +77,8 @@ class MainWindow(QMainWindow, Ui_windowMainWindow):
             self.videomaker.notify.connect(self.finishNotification)
             self.videoThread.finished.connect(lambda: self.showHide(True))
             self.videomaker.error.connect(self.videoThread.quit)
-        except:
+
+        except Exception:
             self.btnRender.setEnabled(True)
 
     def openFolder(self):
@@ -117,8 +115,6 @@ if __name__ == '__main__':
     from main_html_scrape_ultra_super_low_bitrate import VideoMaker, bumblepath
     app = QApplication([])
     notifier = ToastNotifier()
-    # taskbar = Progress()
-    # taskbar.init()
 
     app.setStyleSheet(qdarktheme.load_stylesheet())
     window = MainWindow()

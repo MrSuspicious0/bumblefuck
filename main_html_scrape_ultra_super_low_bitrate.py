@@ -65,12 +65,15 @@ class VideoMaker(QObject):
             url = f"https://www.google.com/search?tbm=isch&oq=&aqs=&q={self.thing.replace(' ', '+')}"
 
             imglinks = []
+
             while len(imglinks) < randomhandfulcount:
+
                 page = requests.get(url)
                 soup = BeautifulSoup(page.content, "lxml")
                 imgs = soup.find_all("img", {"class": "yWs4tf"})
                 imglinks.extend(img.get("src") for img in imgs)
                 nextBtn = soup.find_all("a", {"class": "frGj1b"})
+
                 match len(nextBtn):
                     case 1:
                         nextUrl = nextBtn[0].get("href")
@@ -89,6 +92,7 @@ class VideoMaker(QObject):
             _imglinks = rand.sample(imglinks, self.count)
             for (i, x) in enumerate(_imglinks):
                 a = requests.get(x)
+
                 if a.status_code == 200:
                     log(f"downloading image {i+1}...")
                     temp_img = Image.open(
@@ -205,10 +209,9 @@ class BarReader(StringIO):
 
         if "%" in __s:
             if "chunk:" in __s:
-                v = __s.index("%")  # index in sys.stdout where the nan is
+                v = __s.index("%")
                 percentage = int(__s[v-2:v:]) / 2
             if "t:" in __s:
-                v = __s.index("%")  # index in sys.stdout where the nan is
+                v = __s.index("%")
                 percentage = 50 + (int(__s[v-2:v:]) / 2)
-        # self.window.progressBar.setValue(percentage)
         self.signal.emit(percentage)
